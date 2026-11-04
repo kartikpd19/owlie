@@ -40,10 +40,12 @@ The Lottie files don't include the scroll-into-view or reduced-motion behaviour.
 
 ## GIF files
 
-`gifs/owlie-<expression>.gif`: 480×352, 50fps, infinite loop, white background, 130–510 KB each. They're rendered from the Lottie files, so they match exactly.
+`gifs/owlie-<expression>.gif`: 480×352, 50fps, infinite loop, **transparent background**, 330 KB–1 MB each. They're rendered from the Lottie files, so they match exactly.
+
+GIF transparency is all-or-nothing per pixel, so the soft edge is snapped at 50% opacity. Owlie's outermost edge is the dark navy outline, so there's no white halo on dark or coloured backgrounds.
 
 - **Regenerate:** `npm run lottie && npm run gifs`. Rendering uses Remotion, with the compositions in `remotion/Root.tsx`.
-- **Different background:** `npm run gifs -- --bg=#f4f2fb`.
+- **Solid background instead:** `npm run gifs -- --bg=#f4f2fb`. This gives smoother edges and smaller files when you know the page colour.
 - **Why 50fps:** GIF frame delays are stored in 1/100s, and browsers slow down any delay shorter than 2/100s. 50fps is the smoothest rate that plays at true speed everywhere.
 
 ## Adding a new expression (example: `sleepy`)

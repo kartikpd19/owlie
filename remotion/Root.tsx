@@ -43,7 +43,7 @@ export const RemotionRoot: React.FC = () => (
           fps={GIF_FPS}
           width={a.w}
           height={a.h}
-          defaultProps={{ expression: name, backgroundColor: "#ffffff" } as Props}
+          defaultProps={{ expression: name, backgroundColor: "transparent" } as Props}
         />
       );
     })}
