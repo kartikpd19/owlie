@@ -1,0 +1,197 @@
+/* ───────────── Owlie: inline animated mascot ─────────────
+   Theme with CSS variables on .owlie or any parent:
+   --owlie-outline (also `color`), --owlie-face, --owlie-beak, --owlie-eye, --owlie-heart
+*/
+
+.owlie {
+  --owlie-outline: #151e52;
+  --owlie-face: #fafafc;
+  --owlie-beak: #ffcb47;
+  --owlie-eye: #0c1f42;
+  --owlie-heart: #f34c6b;
+  --owlie-shine: #eaedef;
+
+  position: relative;
+  display: inline-block;
+  vertical-align: baseline;
+  /* ~1.5x cap height: 100x68 at 64px */
+  width: 1.56em;
+  height: 1.06em;
+  margin: 0 0.12em;
+  /* face bottom sits on the baseline; beak dips below like a descender */
+  transform: translateY(0.13em);
+  color: var(--owlie-outline);
+  pointer-events: none;
+  user-select: none;
+  line-height: 0;
+}
+.owlie[data-size="lg"] { width: 100px; height: 68px; transform: translateY(9px); }
+.owlie[data-size="md"] { width: 76px;  height: 52px; transform: translateY(7px); }
+.owlie[data-size="sm"] { width: 44px;  height: 30px; transform: translateY(4px); }
+
+/* Animated layer: absolutely centred so motion can overflow without moving text */
+.owlie__body {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 88%; /* bottom-centre of the face */
+  will-change: transform;
+}
+.owlie__body svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+.owlie__face  { fill: var(--owlie-face); }
+.owlie__beak  { fill: var(--owlie-beak); stroke: currentColor; stroke-width: 3.07761; stroke-linejoin: round; }
+.owlie__shine { stroke: var(--owlie-shine); stroke-width: 1.68536; stroke-linecap: round; stroke-linejoin: round; }
+.owlie__stroke-eyes,
+.owlie__stroke-eyes path { stroke: var(--owlie-eye); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.owlie__heart { fill: var(--owlie-heart); }
+
+.owlie__eyes,
+.owlie__eye,
+.owlie__heart,
+.owlie__eyes--wink > .owlie__stroke-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ───── Static expressions (also what reduced-motion users see) ───── */
+.owlie__eyes { opacity: 0; transform: scale(0.6); }
+.owlie[data-expression="normal"] .owlie__eyes--normal,
+.owlie[data-expression="happy"]  .owlie__eyes--happy,
+.owlie[data-expression="laugh"]  .owlie__eyes--laugh,
+.owlie[data-expression="love"]   .owlie__eyes--love,
+.owlie[data-expression="wink"]   .owlie__eyes--wink {
+  opacity: 1;
+  transform: none;
+}
+
+/* ───── Motion ───── */
+@media (prefers-reduced-motion: no-preference) {
+  /* 5. idle: blink every 3.5s + 2px float */
+  .owlie[data-expression="normal"] .owlie__body {
+    animation: owlie-float 2.6s ease-in-out infinite alternate;
+  }
+  .owlie[data-expression="normal"] .owlie__eyes--normal .owlie__eye {
+    animation: owlie-blink 3.5s linear infinite;
+  }
+
+  /* 1. wink: normal → right eye squashes → wink arc ~180ms → normal (2s) */
+  .owlie[data-expression="wink"] .owlie__eyes--normal {
+    animation: owlie-show 2s linear infinite;
+  }
+  .owlie[data-expression="wink"] .owlie__eyes--normal .owlie__eye--r {
+    animation: owlie-wink-eye 2s linear infinite;
+  }
+  .owlie[data-expression="wink"] .owlie__eyes--wink {
+    animation: owlie-wink-arc 2s linear infinite;
+  }
+  .owlie[data-expression="wink"] .owlie__body {
+    animation: owlie-wink-tilt 2s ease-in-out infinite;
+  }
+
+  /* 2. happy: bob up 5px + tilt ±6deg (0.75s each way) */
+  .owlie[data-expression="happy"] .owlie__body {
+    animation: owlie-happy 0.75s ease-in-out infinite alternate;
+  }
+
+  /* 3. laugh: 3 fast shakes + tiny squash, then pause (1.2s) */
+  .owlie[data-expression="laugh"] .owlie__body {
+    animation: owlie-laugh 1.2s ease-in-out infinite;
+  }
+
+  /* 4. love: normal eyes pop into hearts, hearts pulse, face squash-and-stretch (3s) */
+  .owlie[data-expression="love"] .owlie__eyes--normal {
+    animation: owlie-love-normal 3s ease-in-out infinite;
+  }
+  .owlie[data-expression="love"] .owlie__heart {
+    animation: owlie-love-heart 3s ease-in-out infinite;
+  }
+  .owlie[data-expression="love"] .owlie__body {
+    animation: owlie-love-body 3s ease-in-out infinite;
+  }
+
+  /* Paused until the headline is ≥50% in view */
+  .owlie[data-playing="false"] .owlie__body,
+  .owlie[data-playing="false"] .owlie__body * {
+    animation-play-state: paused !important;
+  }
+}
+
+@keyframes owlie-show {
+  from, to { opacity: 1; transform: none; }
+}
+
+@keyframes owlie-float {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-3%); } /* ≈2px at 68px tall */
+}
+
+@keyframes owlie-blink {
+  0%, 90%   { transform: scaleY(1); }
+  91.7%     { transform: scaleY(0.1); }  /* 120ms closed→open of 3.5s */
+  93.4%, 100% { transform: scaleY(1); }
+}
+
+/* 0–1.2s hold · 1.2–1.29s squash · ~180ms wink · reopen */
+@keyframes owlie-wink-eye {
+  0%, 60%   { transform: scaleY(1);   opacity: 1; }
+  64.4%     { transform: scaleY(0.1); opacity: 1; }
+  64.5%     { transform: scaleY(0.1); opacity: 0; }
+  73.5%     { transform: scaleY(0.1); opacity: 0; }
+  73.6%     { transform: scaleY(0.1); opacity: 1; }
+  78%, 100% { transform: scaleY(1);   opacity: 1; }
+}
+@keyframes owlie-wink-arc {
+  0%, 64.4%    { opacity: 0; transform: none; }
+  64.5%, 73.5% { opacity: 1; transform: none; }
+  73.6%, 100%  { opacity: 0; transform: none; }
+}
+@keyframes owlie-wink-tilt {
+  0%, 56%   { transform: rotate(0deg); }
+  64%, 74%  { transform: rotate(-5deg) translateY(-2%); }
+  84%, 100% { transform: rotate(0deg); }
+}
+
+@keyframes owlie-happy {
+  0%   { transform: translateY(0)     rotate(-6deg); }
+  50%  { transform: translateY(-7.4%) rotate(0deg); } /* ≈5px */
+  100% { transform: translateY(0)     rotate(6deg); }
+}
+
+@keyframes owlie-laugh {
+  0%       { transform: rotate(0deg)  scaleY(1); }
+  6.25%    { transform: rotate(-4deg) scaleY(0.96); }
+  12.5%    { transform: rotate(4deg)  scaleY(0.96); }
+  18.75%   { transform: rotate(-4deg) scaleY(0.96); }
+  25%      { transform: rotate(4deg)  scaleY(0.96); }
+  31.25%   { transform: rotate(-4deg) scaleY(0.96); }
+  37.5%    { transform: rotate(4deg)  scaleY(0.96); }
+  45%, 100% { transform: rotate(0deg) scaleY(1); }
+}
+
+@keyframes owlie-love-normal {
+  0%, 14%   { opacity: 1; transform: scale(1); }
+  19%       { opacity: 0; transform: scale(0); }
+  84%       { opacity: 0; transform: scale(0); }
+  91%, 100% { opacity: 1; transform: scale(1); }
+}
+@keyframes owlie-love-heart {
+  0%, 17%   { opacity: 0; transform: scale(0); }
+  18%       { opacity: 1; transform: scale(0); }
+  26%       { transform: scale(1.15); }
+  32%       { transform: scale(1); }
+  42%       { transform: scale(1.1); }
+  52%       { transform: scale(1); }
+  62%       { transform: scale(1.1); }
+  72%, 80%  { opacity: 1; transform: scale(1); }
+  85%, 100% { opacity: 0; transform: scale(0); }
+}
+@keyframes owlie-love-body {
+  0%, 17%   { transform: scale(1, 1); }
+  23%       { transform: scale(1.05, 0.95); }
+  30%       { transform: scale(0.97, 1.04); }
+  37%       { transform: scale(1, 1); }
+  45%       { transform: scale(1.03, 0.97); }
+  55%       { transform: scale(1, 1); }
+  65%       { transform: scale(1.03, 0.97); }
+  75%, 100% { transform: scale(1, 1); }
+}
