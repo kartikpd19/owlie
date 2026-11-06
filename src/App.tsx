@@ -42,6 +42,9 @@ const ALL: OwlieExpression[] = ["normal", "wink", "happy", "laugh", "love"];
 
 export const App: React.FC = () => (
   <main>
+    <a className="demo-editor-link" href="./lottie.html">
+      Edit colours &amp; download GIF / JSON →
+    </a>
     {SECTIONS.map((s, i) => (
       <section
         key={s.expression}

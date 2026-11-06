@@ -1,6 +1,6 @@
 # Owlie: inline animated mascot
 
-**Live demo:** https://kartikpd19.github.io/owlie/ · **Lottie preview:** https://kartikpd19.github.io/owlie/lottie.html
+**Live demo:** https://kartikpd19.github.io/owlie/ · **Edit & download (GIF / JSON):** https://kartikpd19.github.io/owlie/lottie.html
 
 Owlie sits inside headlines like an emoji and plays a short looping expression while its headline is on screen.
 
@@ -36,7 +36,7 @@ How it works:
 - **Loop lengths:** normal 3.5s, wink 2s, happy 1.5s, laugh 1.2s, love 3s.
 - **Layers:** `body` is a null layer whose pivot is the bottom-centre of the face, and all motion lives on it. The `eyes`, `beak`, `outline` and `face` layers are parented to it.
 - **Regenerate:** `npm run lottie` rebuilds every file from `src/owlie/paths.ts` and the keyframes in `scripts/build-lottie.ts`. Edit the numbers there to adjust timing.
-- **Preview:** `npm run dev`, then open http://localhost:5173/lottie.html.
+- **Edit & download:** `npm run dev`, then open http://localhost:5173/lottie.html. Change colours and speed with a live preview, then download the edited Lottie JSON or a GIF (rendered in the browser; transparent or solid background, full or half size). Your settings are saved in the URL, so a copied link reopens the same design.
 
 The Lottie files don't include the scroll-into-view or reduced-motion behaviour. The player that hosts them handles that: call `play()` or `pause()` from an IntersectionObserver, and use `goToAndStop(0)` for reduced motion.
 

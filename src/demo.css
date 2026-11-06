@@ -51,3 +51,12 @@ body { margin: 0; }
 .demo-sizes { display: flex; align-items: flex-end; gap: 18px; }
 .demo-sizes .owlie { transform: none; margin: 0; }
 .demo-cell code { font-size: 13px; opacity: 0.6; }
+
+.demo-editor-link {
+  position: fixed; top: 16px; right: 16px; z-index: 10;
+  font: 600 14px/1 Inter, ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  color: #fff; background: #4b44d6; text-decoration: none;
+  padding: 11px 16px; border-radius: 999px;
+  box-shadow: 0 6px 20px rgb(75 68 214 / .3);
+}
+.demo-editor-link:hover { filter: brightness(1.08); }
