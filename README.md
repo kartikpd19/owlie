@@ -1,5 +1,7 @@
 # Owlie: inline animated mascot
 
+**Live demo:** https://kartikpd19.github.io/owlie/ · **Lottie preview:** https://kartikpd19.github.io/owlie/lottie.html
+
 Owlie sits inside headlines like an emoji and plays a short looping expression while its headline is on screen.
 
 ```tsx
